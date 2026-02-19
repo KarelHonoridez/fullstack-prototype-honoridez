@@ -4,15 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="/html/styles.css">
-
     <title>Full-stack App (Student Build)</title>
 </head>
 
-<body>
+<body class="not-authenticated">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
     <a class="navbar-brand fw-bold" href="#">
@@ -21,90 +18,146 @@
 
     <div class="collapse navbar-collapse justify-content-end">
 
-        <ul class="navbar-nav not-logged-in">
+        <ul class="navbar-nav role-logged-out">
             <li class="nav-item">
-                <a class="nav-link" href="#">Login</a>
+                <a class="nav-link" href="#" onclick="navigate('#/login'); return false;">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Register</a>
+                <a class="nav-link" href="#" onclick="navigate('#/register'); return false;">Register</a>
             </li>
         </ul>
 
-        <ul class="navbar-nav logged-in d-none">
-
-            <li class="nav-item role-admin d-none">
-                <a class="nav-link" href="#">Employees</a>
+        <ul class="navbar-nav role-logged-in">
+            <li class="nav-item role-admin">
+                <a class="nav-link" href="#" onclick="navigate('#/employees'); return false;">Employees</a>
             </li>
-            <li class="nav-item role-admin d-none">
-                <a class="nav-link" href="#">Accounts</a>
+            <li class="nav-item role-admin">
+                <a class="nav-link" href="#" onclick="navigate('#/accounts'); return false;">Accounts</a>
             </li>
-            <li class="nav-item role-admin d-none">
-                <a class="nav-link" href="#">Departments</a>
+            <li class="nav-item role-admin">
+                <a class="nav-link" href="#" onclick="navigate('#/departments'); return false;">Departments</a>
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="nav-username">
                     Username
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">My Requests</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="navigate('#/profile'); return false;">Profile</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="navigate('#/my-requests'); return false;">My Requests</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout(); return false;">Logout</a></li>
                 </ul>
             </li>
         </ul>
 
     </div>
 </nav>
-<div style="padding:40px 30px; max-width:900px;">
 
+<!-- ─── Home Page ─────────────────────────────────────────── -->
+<div id="page-home" class="page" style="padding:40px 30px; max-width:900px;">
     <h1 style="margin-bottom:10px; font-weight:bold;">
         Welcome to Full-Stack App
     </h1>
-
     <p style="color:#555; margin-bottom:20px;">
         A static prototype before backend integration. Simulates:
     </p>
-
     <ul style="color:#555; line-height:1.8;">
         <li>Email registration + fake verification</li>
         <li>Login with JWT-like token simulation</li>
         <li>Role-based UI (Admin/User)</li>
         <li>CRUD for Employees, Departments, Requests</li>
     </ul>
-
-    <div style="
-        margin-top:25px;
-        background:#dff5fb;
-        border:1px solid #9bd3e6;
-        padding:15px;
-        border-radius:6px;
-        color:#0b4f6c;
-    ">
-        ⚠️ <strong>Note:</strong> All data is stored in 
-        <span style="color:#d63384; font-family: monospace;">localStorage</span>.
+    <div style="margin-top:25px; background:#dff5fb; border:1px solid #9bd3e6; padding:15px; border-radius:6px; color:#0b4f6c;">
+        ⚠️ <strong>Note:</strong> All data is stored in
+        <span style="color:#d63384; font-family:monospace;">localStorage</span>.
         Refresh to reset.
     </div>
-
     <div style="margin-top:25px;">
-        <a href="#" style="
-            display:inline-block;
-            background:#2563eb;
-            color:white;
-            padding:12px 20px;
-            text-decoration:none;
-            border-radius:6px;
-            font-weight:bold;
-        ">
+        <a href="#" onclick="navigate('#/register'); return false;" style="display:inline-block; background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px; font-weight:bold;">
             Get Started →
         </a>
     </div>
-
 </div>
 
+<!-- ─── Register Page ─────────────────────────────────────── -->
+<div id="page-register" class="page" style="padding:40px 30px; max-width:500px;">
+    <h2 style="margin-bottom:20px; font-weight:bold;">Register Account</h2>
+
+    <div id="register-error" class="alert alert-danger d-none"></div>
+
+    <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" id="reg-firstname" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" id="reg-lastname" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="reg-email" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="reg-password" class="form-control">
+    </div>
+
+    <button onclick="handleRegister()" class="btn btn-success">Sign Up</button>
+    <a href="#" onclick="navigate('#/'); return false;" class="btn btn-outline-secondary ms-2">Cancel</a>
+</div>
+
+<!-- ─── Verify Email Page ─────────────────────────────────── -->
+<div id="page-verify-email" class="page" style="padding:40px 30px; max-width:500px;">
+    <h2 style="margin-bottom:20px; font-weight:bold;">Verify Your Email</h2>
+    <p style="color:#555;">
+        A verification code has been sent to <strong id="verify-email-display"></strong>.
+        Please enter the 6-digit code below.
+    </p>
+
+    <div id="verify-error" class="alert alert-danger d-none"></div>
+    <div id="verify-success" class="alert alert-success d-none"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Verification Code</label>
+        <input type="text" id="verify-code-input" class="form-control" maxlength="6" placeholder="______">
+    </div>
+
+    <button onclick="handleVerify()" class="btn btn-success">Verify</button>
+    <a href="#" onclick="navigate('#/register'); return false;" class="btn btn-outline-secondary ms-2">Back</a>
+
+    <div class="mt-3">
+        <small class="text-muted">Didn't get a code?
+            <a href="#" onclick="resendCode(); return false;">Resend</a>
+        </small>
+    </div>
+
+    <div id="dev-code-hint" class="mt-3 p-2 bg-light border rounded" style="font-family:monospace; font-size:0.85rem; color:#555;">
+        🛠 Dev hint — your code: <strong id="dev-code-value"></strong>
+    </div>
+</div>
+
+<!-- ─── Login Page ────────────────────────────────────────── -->
+<div id="page-login" class="page" style="padding:40px 30px; max-width:500px;">
+    <h2 style="margin-bottom:20px; font-weight:bold;">Login</h2>
+
+    <div id="login-error" class="alert alert-danger d-none"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="login-email" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-control">
+    </div>
+
+    <button onclick="handleLogin()" class="btn btn-primary">Login</button>
+    <a href="#" onclick="navigate('#/register'); return false;" class="btn btn-outline-secondary ms-2">Register instead</a>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/html/script.js"></script>
 
 </body>
 </html>
